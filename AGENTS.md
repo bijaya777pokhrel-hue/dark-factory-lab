@@ -74,6 +74,7 @@ The human gives a goal once; the factory delivers a reviewed PR. Guardrails and 
 
 - Tests come first and are committed before the code they test.
 - Each source file `x.go` gets exactly one blackbox test file `x_test.go` (`package <pkg>_test`).
+- Exception, allowed by the human on 2026-11-06: `doc.go` is a placeholder holding only a package clause and comment. It has no behavior to test, so it has no test file. This lasts only while it contains no statements.
 - The thin CLI `main` is no exception. Its test builds and runs the binary.
 - Each exported function and method gets one table-driven test that calls `t.Parallel()`. It asserts the behavior the goal describes, not whatever the code happens to output.
 - Keep the CLI `main` thin: it only wires things up, and the logic lives in packages.
