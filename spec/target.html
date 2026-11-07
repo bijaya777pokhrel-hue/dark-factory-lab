@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Semantic Font Target</title>
+<style>
+  html { font-size: 100%; background: #ffffff; color: #1c1c1c; }
+  body {
+    margin: 0;
+    background: #ffffff;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  main { max-width: 40rem; margin: 0 auto; padding: 3rem 1rem; }
+  p { margin: 0; font-size: 2rem; line-height: 1.6; }
+</style>
+</head>
+<body>
+<main>
+<!--
+  Visual spec for the semantic font renderer: one sentence, every word styled by its scores.
+
+  SCORES (per word)
+    valence   (-1..1): VADER lexicon mean / 4. Words not in the lexicon are 0.
+    salience  (0..1) : function words (the, was, but) = 0.15; other words = 0.35 + 0.65 * |valence|, 2 decimals.
+    surprise  (0..1) : 0 for the first word and for neutral words; otherwise
+                       |valence - mean(valences of the earlier sentiment words)| / 2, capped at 1, 2 decimals
+                       (0 when there is no earlier sentiment word).
+    certainty (0..1) : hedge words (perhaps) = 0.15; assertive words = 0.9..1.0; everything else = 0.5.
+
+  MAPPING (scores -> inline style, in this order). Rounding is half-up.
+    font-weight    = 300 + 500 * salience, rounded to a multiple of 50
+    font-size      = 0.9 + 0.5 * salience em, 2 decimals
+    color          = t = |valence| ** 0.5 (square root); sRGB linear interpolation from ink #1c1c1c
+                       toward the anchor for the valence's sign by t, each channel rounded:
+                       negative -> #a82e00 (vermilion), positive -> #0b4fa8 (blue); valence 0 -> #1c1c1c
+    font-style     = oblique Ndeg with N = round(14 * max(0, 0.5 - certainty) / 0.5); normal when N = 0
+                       (only hedged words slant; neutral and confident words are upright)
+    letter-spacing = 0.12 * surprise em, 3 decimals
+    opacity        = 0.8 + 0.2 * certainty, 2 decimals (opacity floor 0.8)
+
+  CONTRAST: text colour at its opacity, composited over #ffffff, is >= 4.5:1 (WCAG) for every span.
+    Extremes at certainty 0 (opacity 0.8): vermilion 4.66, blue 4.87, ink 8.95.
+
+  PER-WORD TABLE
+    word      lex mean  valence  sal   surp  cert | weight  size    color    style          spacing  opacity  contrast
+    The       -          0.000   0.15  0.00  0.50 | 400     0.98em  #1c1c1c  normal         0em      0.9      12.69
+    meal      -          0.000   0.35  0.00  0.50 | 500     1.08em  #1c1c1c  normal         0em      0.9      12.69
+    was       -          0.000   0.15  0.00  0.50 | 400     0.98em  #1c1c1c  normal         0em      0.9      12.69
+    perhaps   - (hedge)  0.000   0.35  0.00  0.15 | 500     1.08em  #1c1c1c  oblique 10deg  0em      0.83     9.96
+    good      1.9        0.475   0.66  0.00  0.50 | 650     1.23em  #103f7c  normal         0em      0.9      7.88
+    but       -          0.000   0.15  0.00  0.50 | 400     0.98em  #1c1c1c  normal         0em      0.9      12.69
+    dessert   -          0.000   0.35  0.00  0.50 | 500     1.08em  #1c1c1c  normal         0em      0.9      12.69
+    was       -          0.000   0.15  0.00  0.50 | 400     0.98em  #1c1c1c  normal         0em      0.9      12.69
+    horrible  -2.5      -0.625   0.76  0.55  0.50 | 700     1.28em  #8b2a06  normal         0.066em  0.9      6.90
+  ("-" = not in the VADER lexicon.)
+-->
+<p><span data-valence="0" data-salience="0.15" data-surprise="0" data-certainty="0.5" style="font-weight: 400; font-size: 0.98em; color: #1c1c1c; font-style: normal; letter-spacing: 0em; opacity: 0.9">The</span> <span data-valence="0" data-salience="0.35" data-surprise="0" data-certainty="0.5" style="font-weight: 500; font-size: 1.08em; color: #1c1c1c; font-style: normal; letter-spacing: 0em; opacity: 0.9">meal</span> <span data-valence="0" data-salience="0.15" data-surprise="0" data-certainty="0.5" style="font-weight: 400; font-size: 0.98em; color: #1c1c1c; font-style: normal; letter-spacing: 0em; opacity: 0.9">was</span> <span data-valence="0" data-salience="0.35" data-surprise="0" data-certainty="0.15" style="font-weight: 500; font-size: 1.08em; color: #1c1c1c; font-style: oblique 10deg; letter-spacing: 0em; opacity: 0.83">perhaps</span> <span data-valence="0.475" data-salience="0.66" data-surprise="0" data-certainty="0.5" style="font-weight: 650; font-size: 1.23em; color: #103f7c; font-style: normal; letter-spacing: 0em; opacity: 0.9">good</span>, <span data-valence="0" data-salience="0.15" data-surprise="0" data-certainty="0.5" style="font-weight: 400; font-size: 0.98em; color: #1c1c1c; font-style: normal; letter-spacing: 0em; opacity: 0.9">but</span> <span data-valence="0" data-salience="0.35" data-surprise="0" data-certainty="0.5" style="font-weight: 500; font-size: 1.08em; color: #1c1c1c; font-style: normal; letter-spacing: 0em; opacity: 0.9">dessert</span> <span data-valence="0" data-salience="0.15" data-surprise="0" data-certainty="0.5" style="font-weight: 400; font-size: 0.98em; color: #1c1c1c; font-style: normal; letter-spacing: 0em; opacity: 0.9">was</span> <span data-valence="-0.625" data-salience="0.76" data-surprise="0.55" data-certainty="0.5" style="font-weight: 700; font-size: 1.28em; color: #8b2a06; font-style: normal; letter-spacing: 0.066em; opacity: 0.9">horrible</span>.</p>
+</main>
+</body>
+</html>
