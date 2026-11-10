@@ -133,6 +133,7 @@ func expectTokens(want []lexiscore.Token) func(*testing.T, string, []lexiscore.T
 
 // expectSplit compares only the token texts and kinds (word boundaries).
 func expectSplit(want ...string) func(*testing.T, string, []lexiscore.Token) {
+	want = append([]string{}, want...) // no arguments means an empty, non-nil list
 	return func(t *testing.T, _ string, got []lexiscore.Token) {
 		t.Helper()
 		if !reflect.DeepEqual(texts(got), want) {
