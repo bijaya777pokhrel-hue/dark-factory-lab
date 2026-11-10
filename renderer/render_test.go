@@ -315,7 +315,7 @@ func TestRender_styleMapping(t *testing.T) {
 			[4]string{"-0.25", "0", "0", "0.5"},
 			[6]string{"300", "0.9em", "#62250e", "normal", "0em", "0.9"}},
 		{"half-up rounding", renderer.Token{Salience: 0.05, Surprise: 0.0125, Certainty: 0.25},
-			[4]string{"0.05", "0", "0.0125", "0.25"},
+			[4]string{"0", "0.05", "0.0125", "0.25"},
 			[6]string{"350", "0.93em", "#1c1c1c", "oblique 7deg", "0.002em", "0.85"}},
 		{"slant rounds to zero is normal", renderer.Token{Certainty: 0.49},
 			[4]string{"0", "0", "0", "0.49"},
@@ -857,7 +857,7 @@ func TestRender_robust(t *testing.T) {
 		{"nil", nil, 0},
 		{"NaN and Inf everywhere", []renderer.Token{{Text: "x", Word: true, Valence: nan, Salience: math.Inf(-1), Surprise: nan, Certainty: math.Inf(1)}}, 0},
 		{"huge words input (~2.3 MB)", big, 2_000_000},
-		{"huge single text with breaks (~3 MB)", []renderer.Token{gap(strings.Repeat("x \n \n\r\ny\n", 300_000))}, 3_000_000},
+		{"huge single text with breaks (~3 MB)", []renderer.Token{gap(strings.Repeat("x \n \n\r\ny\n", 350_000))}, 3_000_000},
 		{"huge single word (~3 MB)", []renderer.Token{w(strings.Repeat("<&>", 1_000_000))}, 3_000_000},
 	}
 	for _, tc := range tests {
