@@ -1,2 +1,5 @@
 .worktrees/
 cover.out
+spec/out.html
+spec/target.png
+spec/out.png
