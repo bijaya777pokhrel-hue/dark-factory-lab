@@ -228,7 +228,7 @@ func isPlainWord(s string) bool {
 func randomText(rng *rand.Rand) string {
 	pieces := []string{
 		"a", "Z", "é", "ж", "日", "ß", "Ω", "'", "’", "''", "-", "_", "1", "42", " ", "\t", "\r\n", "\n",
-		".", "!", "?", ",", ";", "😀", "👍🏽", "́", "‍", "\xff", "\xc3", "\xe2\x80", "\x00",
+		".", "!", "?", ",", ";", "😀", "👍🏽", "\u0301", "\u200d", "\xff", "\xc3", "\xe2\x80", "\x00",
 		"good", "Horrible", "perhaps", "DEFINITELY", "the", "don't", "can’t", ":)", "xd", "ok",
 	}
 	n := rng.IntN(40)
@@ -298,7 +298,7 @@ func TestAnalyze(t *testing.T) {
 		{"underscore splits", "snake_case", expectSplit("snake", "[_]", "case")},
 		{"non-Latin letters form words", "Привет, мир! 日本語 naïve Ωmega",
 			expectSplit("Привет", "[, ]", "мир", "[! ]", "日本語", "[ ]", "naïve", "[ ]", "Ωmega")},
-		{"combining marks are not letters", "café ok", expectSplit("cafe", "[́ ]", "ok")},
+		{"combining marks are not letters", "cafe\u0301 ok", expectSplit("cafe", "[\u0301 ]", "ok")},
 		{"emoticon is not a word", "nice :) day", expectSplit("nice", "[ :) ]", "day")},
 
 		// 3/4. Lookup and valence.
